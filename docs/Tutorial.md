@@ -88,6 +88,7 @@ Note we assume the following namespaces below:
  [tape.mvc.view :as v :include-macros true]
  [tape.router :as router]
  [tape.toasts.controller :as toasts.c]
+ [tape.toasts.view :as toasts.v]
  [myname.myapp.app.hello.controller :as hello.c]
  [myname.myapp.app.hello.view :as hello.v])
 ```
@@ -96,6 +97,17 @@ Note we assume the following namespaces below:
 
 The generated app has in `app/layouts/view.cljs` a reagent function called `app`. This is mounted in the DOM and is the
 entrypoint to our app. In it we define a HTML page layout and render the "current view".  
+
+```clojure
+(defn app []
+  (let [current-view-fn @(rf/subscribe [::v/current-fn])]
+    [:<>
+     [:section.section
+      [:div.container
+       (when (some? current-view-fn)
+         [current-view-fn])]]
+     [toasts.v/index]]))
+```
 
 The "current page" that changes alongside the URL (whether via hash-change or History API) is so established on the web
 that we decided to make it available by default in Tape. You don't have to necessarily use it, but if you want to, it's
