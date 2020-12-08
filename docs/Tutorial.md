@@ -1,5 +1,7 @@
 ## Tutorial
 
+This tutorial is meant to make you familiar with Tape Framework. It's not a comprehensive reference.
+
 #### Prerequisites
 
 Before learning how to use Tape Framework you need to know the following:
@@ -85,6 +87,7 @@ Note we assume the following namespaces below:
  [tape.mvc.controller :as c :include-macros true]
  [tape.mvc.view :as v :include-macros true]
  [tape.router :as router]
+ [tape.toasts.controller :as toasts.c]
  [myname.myapp.app.hello.controller :as hello.c]
  [myname.myapp.app.hello.view :as hello.v])
 ```
@@ -142,6 +145,12 @@ We also have a subscription in our `hello` controller for our greeting:
 At the end we call the `(c/defmodule)` macro that inspects the namespace and defines a `tape.module`. This is added in
 the modules config map by "modules discovery".
 
+When a controller namespace is required in another namespace, the naming convention is as follows:
+
+```clojure
+(:require [myname.myapp.app.hello.controller :as hello.c])
+```
+
 #### Views
 
 Views are namespaces with Reagent functions. Functions that can become the "current view" must be annotated with 
@@ -169,6 +178,12 @@ Let's add a button that calls our `hello.c/change` handler:
   (let [say @(rf/subscribe [::hello.c/say])]
     [:p.hello-tape say]
     [:button.button {:on-click #(rf/dispatch [::hello.c/change])}]))
+```
+
+When a view namespace is required in another namespace, the naming convention is as follows:
+
+```clojure
+(:require [myname.myapp.app.hello.view :as hello.v])
 ```
 
 #### Routing
@@ -215,9 +230,109 @@ When we click the link the browse address changes to "localhost:9500/#/change/Wa
 dispatching `[::hello.c/change {:path {:to "Wazaaa"}}]`. This is handled by `hello.c/change` and the greeting is 
 changed.
 
+#### Timeouts and Intervals
+
+To be idiomatic when setting timeouts and intervals `tape.tools` offers the following modules for your `config.edn`:
+
+```clojure
+{:tape.tools.timeouts.controller/module nil
+ :tape.tools.intervals.controller/module nil}
+```
+
+To set a timeout dispatch the following event:
+
+```clojure
+(rf/dispatch [::timeouts.c/set {:ms 3000                  ;; miliseconds
+                                :set [::was-set]          ;; optional, dispatched as [::was-set timeout-id]
+                                :timeout [::timed-out]}]) ;; dispatched on timeout
+``` 
+
+To clear a timeout: `(rf/dispatch [::timeouts.c/clear timeout-id])`.  
+Similar for intervals.
+
+#### Working with forms
+
+A form with a number of fields is mapped to a hash-map in app-db. Let's say we have a login form with an email and 
+password.
+
+##### Form controller
+
+We start by creating a controller with:
+1. An event handler that sets a pair in the map.
+2. A subscription that reads the map.
+
+```clojure
+(ns myname.myapp.app.guis.login.controller
+  (:require [tape.mvc.controller :as c :include-macros true]))
+
+(defn ^::c/event-db field
+  "Assoc in app-db login map value v at key k."
+  [db [_ k v]] (assoc-in db [::login k] v))
+
+(defn ^::c/sub login
+  "Subscription to the login map"
+  [db _] (::login db))
+
+(c/defmodule)
+```
+
+##### Form view
+
+In our corresponding view, we make a `form-fields` partial that will render the form fields.  
+Using `tape.tools` lens we make a function that "gets" by reading the subscription and "sets" by dispatching an event.
+Using `tape.tools`'s `form/field` we make inputs that control our hash-map via the above lens function.
+Finally, we attempt login by dispatching an event if the HTML5 Validation API doesn't complain, via `form/when-valid`.
+
+```clojure
+(ns myname.myapp.app.guis.login.view
+  (:require [re-frame.core :as rf]
+            [tape.mvc.view :as v :include-macros true]
+            [tape.tools :as tools]
+            [tape.tools.ui.form :as form]
+            [myname.myapp.app.guis.login.controller :as login.c]))
+
+(defn- form-fields []
+  (let [lens (tools/lens ::login.c/login  ;; the subscription
+                         ::crud.c/field)] ;; the handler
+    [:<>
+     [:div.field
+      [:label.label "Email"]
+      [:div.control
+       [form/field {:type :text, :class "input", :source lens, :field :email, :required true}]]]
+     [:div.field
+      [:label.label "Password"]
+      [:div.control
+       [form/field {:type :password, :class "input", :source lens, :field :password, :required true}]]]]))
+
+(defn ^::v/view new []
+  [:form
+   [:h2 "Login"]
+   [form-fields]
+   [:div.field
+    [:label.label "Password"]
+    [:div.control
+     [:button.button.is-primary {:on-click (form/when-valid #(rf/dispatch [::login.c/create]))} "Log in"]]]])
+
+(c/defmodule myname.myapp.app.guis.login.controller)
+```
+
+#### Toasts notifications
+
+Generally you want to notify the user of success/failure of various actions. The `tape.toasts` module allows you to 
+flash such messages. If you used the Tape Framework app generator the module is already configured. To show a message
+dispatch `(rf/dispatch [::toasts.c/create :info "Some message"])`. Toast kind can be one of: `:success`, `:danger`, 
+`:warning`, `:info`. Example in controller handler:
+
+```clojure
+(defn ^::c/event-fx create [{:keys [db]} _]
+  {:db         (update db ::people conj (::person db))
+   :dispatch-n [[::router/navigate [::index]]
+                [::toasts.c/create :success "Person added!"]]})
+```
+
 #### See also
 
-`tape.tools`, `tape.toasts` and generally the READMEs of each subproject.
+See the READMEs of each subproject.
 
 #### License
 
