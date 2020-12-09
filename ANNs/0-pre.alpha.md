@@ -1,4 +1,7 @@
-### Tape Framework 0.1.0.alpha
+### Tape Framework pre.alpha
+
+STATUS: Pre-alpha, in design and prototyping phase. Feedback appreciated.
+This is an early preview. You will have to use clojure.deps with git coordinates for now.
 
 Inspired by [Duct Framework](https://github.com/duct-framework), [Tape Framework](https://github.com/tape-framework) 
 tries to be a Frontend Doppelgänger. Useful for folks wanting ready-made DI/IOC-glue for their new Re-Frame + Reagent 
@@ -17,10 +20,10 @@ It does:
    (`tape.dev`, `tape.router`, `tape.tools`, `tape.toasts`).
 
 Future plans:
-1. Extract the "current view" mechanism in a module.
-2. Right now `tape.mvc` is mostly just a proxy to Re-Frame. The **longer term stake** here is for things from system map
+1. Right now `tape.mvc` is mostly just a proxy to Re-Frame. The **longer term stake** here is for things from system map
    to be injected in handlers and views (via fn params metadata) and allow to **move away from globals** (event-reactor,
    app-db & other fxs state: to live in the system map). Expect breaking changes for that to happen.
+2. Extract the "current view" mechanism in a module.
 
 Notes:
 1. It's all optional, you can use just the pieces you want. Don't like `tape.mvc`? Use plain `ig/init-key`. Don't
