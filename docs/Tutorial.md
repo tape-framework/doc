@@ -16,10 +16,29 @@ Before learning how to use Tape Framework you need to know the following:
 #### Generate an app
 
 We generate an app by means of `tape.clj-template`; we assume [clj-new](https://github.com/seancorfield/clj-new) is
-installed and configured.
+installed and configured.  
+
+Until the first release you will have to first clone each subproject:
 
 ```bash
-> clj -X:new clj-new/create :template tape :name myname/myapp
+mkdir tape
+cd tape
+git clone git@github.com:tape-framework/versions.git
+git clone git@github.com:tape-framework/refmap.git
+git clone git@github.com:tape-framework/module.git
+git clone git@github.com:tape-framework/mvc.git
+git clone git@github.com:tape-framework/tools.git
+git clone git@github.com:tape-framework/toasts.git
+git clone git@github.com:tape-framework/dev.git
+git clone git@github.com:tape-framework/clj-template.git
+```
+
+Now generate an app:
+
+```bash
+CLJ_CONFIG=./versions/ clj -Aversions \
+  -Sdeps '{:deps {tape/clj-template {:local/root "./clj-template"}}}' \
+  -X:new clj-new/create :template tape :name myname/myapp
 ```
 
 This will generate the following files tree:
@@ -60,8 +79,8 @@ myapp
 First, start a Clojure REPL:
 
 ```bash
-> cd myapp
-> clj -A:test # development tools are in the test alias
+cd myapp
+CLJ_CONFIG=../versions/ clj -Aversions:test # development tools are in the test alias
 ```
 
 Then, start a ClojureScript REPL via Figwheel:
