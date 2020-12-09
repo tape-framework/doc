@@ -68,7 +68,7 @@ myapp
             ├── core.cljs
             └── app
                 ├── layouts
-                │   └── view.cljs
+                │   └── app.cljs
                 └── hello
                     ├── controller.cljs
                     └── view.cljs
@@ -114,8 +114,8 @@ Note we assume the following namespaces below:
 
 #### Layouts and current view
 
-The generated app has in `app/layouts/view.cljs` a reagent function called `app`. This is mounted in the DOM and is the
-entrypoint to our app. In it we define a HTML page layout and render the "current view".  
+The generated app has in `app/layouts/app.cljs` a reagent function called `app`. This is mounted in the DOM and is the
+entrypoint to our app. In it, we define an HTML page layout and render the "current view".  
 
 ```clojure
 (defn app []
