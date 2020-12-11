@@ -580,7 +580,7 @@ status open
 
 \begin_layout Plain Layout
 
-    (for [p peeps] [:p p])))
+    (for [p peps] [:p p])))
 \end_layout
 
 \end_inset
@@ -592,7 +592,7 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Reagent plain
+Reagent Integrant
 \end_layout
 
 \end_inset
@@ -683,7 +683,12 @@ status open
 
 \begin_layout Plain Layout
 
-(derive ::index :tape/const)
+(derive ::index 
+\end_layout
+
+\begin_layout Plain Layout
+
+        :tape/const)
 \end_layout
 
 \end_inset
@@ -750,7 +755,12 @@ status open
 
 \begin_layout Plain Layout
 
-(derive ::index :tape/const)
+(derive ::index 
+\end_layout
+
+\begin_layout Plain Layout
+
+        :tape/const)
 \end_layout
 
 \end_inset
@@ -1172,11 +1182,7 @@ Leverage Intuitions
 
 \begin_deeper
 \begin_layout Itemize
-MVC is well understood.
-\end_layout
-
-\begin_layout Itemize
-Let's use it in naming.
+MVC is well understood, let's use it in naming.
 \end_layout
 
 \begin_layout Itemize
@@ -1330,7 +1336,12 @@ status open
 
 \begin_layout Plain Layout
 
-(defn ::c/event-db index [db _] 
+(defn ::c/event-db
+\end_layout
+
+\begin_layout Plain Layout
+
+  index [db _] 
 \end_layout
 
 \begin_layout Plain Layout
@@ -1401,12 +1412,17 @@ status open
 
 \begin_layout Plain Layout
 
-(defn ::v/view index []
+(defn ::v/view 
 \end_layout
 
 \begin_layout Plain Layout
 
-  (for [p peeps] [:p p]))
+  index []
+\end_layout
+
+\begin_layout Plain Layout
+
+  (for [p peps] [:p p]))
 \end_layout
 
 \begin_layout Plain Layout
