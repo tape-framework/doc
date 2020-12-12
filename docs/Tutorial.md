@@ -36,7 +36,7 @@ git clone git@github.com:tape-framework/clj-template.git
 Now generate an app:
 
 ```bash
-CLJ_CONFIG=./versions/ clj -Aversions \
+CLJ_CONFIG=./versions/ clj -A:versions \
   -Sdeps '{:deps {tape/clj-template {:local/root "./clj-template"}}}' \
   -X:new clj-new/create :template tape :name myname/myapp
 ```
@@ -80,7 +80,7 @@ First, start a Clojure REPL:
 
 ```bash
 cd myapp
-CLJ_CONFIG=../versions/ clj -Aversions:test # development tools are in the test alias
+CLJ_CONFIG=../versions/ clj -A:versions:test # development tools are in the test alias
 ```
 
 Then, start a ClojureScript REPL via Figwheel:

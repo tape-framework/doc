@@ -47,8 +47,9 @@ The following namespace is assumed in further descriptions:
             [tape.mvc :as mvc :include-macros true]))
 ```
 
-At compile time this map is read by a macro `(module/read-config "guis7/config.edn")`. In it we merge the controller 
-and views modules map. This latter map is obtained also at compile time by a macro called "modules discovery"
+At compile time this map is read by a macro `(module/read-config "myname/myapp/config.edn")`. In it we merge the 
+controller and views modules map. This latter map is obtained also at compile time by a macro called "modules 
+discovery":
 
 ```clojure
 (let [{:keys [modules routes]} (mvc/modules-discovery "src/myapp/app")])
