@@ -253,7 +253,7 @@ We can now change our button in the view to a link:
 (defn ^::v/view index []
   (let [say @(rf/subscribe [::hello.c/say])]
     [:p.hello-tape say]
-    [:a.button {:href (router/href [::hello.c/change {:to "Wazaaa"}])}]))
+    [:a.button {:href (router/href* [::hello.c/change {:to "Wazaaa"}])}]))
 ```
 
 We used the name of the route and params, and Reitit assembled the route path for us (a sort of reverse routing).
@@ -323,8 +323,8 @@ Finally, we attempt login by dispatching an event if the HTML5 Validation API do
             [myname.myapp.app.guis.login.controller :as login.c]))
 
 (defn- form-fields []
-  (let [lens (tools/lens ::login.c/login  ;; the subscription
-                         ::crud.c/field)] ;; the handler
+  (let [lens (tools/lens* ::login.c/login  ;; the subscription
+                          ::crud.c/field)] ;; the handler
     [:<>
      [:div.field
       [:label.label "Email"]
