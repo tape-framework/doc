@@ -361,6 +361,22 @@ dispatch `(rf/dispatch [::toasts.c/create :info "Some message"])`. Toast kind ca
                 [::toasts.c/create :success "Person added!"]]})
 ```
 
+#### Ergonomic API
+
+When dispatching and subscribing, we have a number of macros called the
+"Ergonomic API". These are equivalent to the ones in Re-Frame (or Tape - 
+ending in *), except they take a symbol instead of a keyword in the first
+position of the vector. This symbol is IDE navigable ("jump to definition").
+The macros macroexpand to the standard API, thus have no runtime cost.
+
+```clojure
+(v/dispatch [posts.c/index])                ;; => (rf/dispatch [::posts.c/index])
+(v/subscribe [posts.c/posts])               ;; => (rf/subscribe [::posts.c/posts])
+(router/href [greet.c/hi {:say "Hi!"}])     ;; => (router/href* [::greet.c/hi {:say "Hi!"}])
+(router/navigate [greet.c/hi {:say "Hi!"}]) ;; => (router/navigate* [::greet.c/hi {:say "Hi!"}])
+(tools/lens posts.c/post posts.c/field)     ;; => (tools/lens* ::posts.c/post ::posts.c/field)
+```
+
 #### See also
 
 See the READMEs of each subproject.
