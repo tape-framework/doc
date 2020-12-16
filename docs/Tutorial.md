@@ -86,7 +86,7 @@ CLJ_CONFIG=../versions/ clj -A:versions:test # development tools are in the test
 Then, start a ClojureScript REPL via Figwheel:
 
 ```clojure
-(fig/dev) ;; starts Figwheel and opens a browser at http://localhost:9500/  
+(build/fig) ;; starts Figwheel and opens a browser at http://localhost:9500/
 ```
 
 Development tooling based on [Integrant REPL](https://github.com/weavejester/integrant-repl) is in `myname.myapp.dev` 
