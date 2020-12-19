@@ -367,7 +367,9 @@ When dispatching and subscribing, we have a number of macros called the
 "Ergonomic API". These are equivalent to the ones in Re-Frame (or Tape - 
 ending in *), except they take a symbol instead of a keyword in the first
 position of the vector. This symbol is IDE navigable ("jump to definition").
-The macros macroexpand to the standard API, thus have no runtime cost.
+The macros macroexpand to the standard API, thus have no runtime cost. Also
+added vaue: the handler existance is checked at compile time, and typos are
+avoided.
 
 ```clojure
 (v/dispatch [posts.c/index])                ;; => (rf/dispatch [::posts.c/index])
