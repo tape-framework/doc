@@ -97,6 +97,10 @@ clyfe
 Modules
 \end_layout
 
+\begin_layout Subsection
+Tape Modules
+\end_layout
+
 \begin_layout FragileFrame
 \begin_inset Argument 4
 status open
@@ -256,6 +260,10 @@ Reagent view functions.
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsection
+Init process
 \end_layout
 
 \begin_layout FragileFrame
@@ -1359,6 +1367,10 @@ Note
 MVC
 \end_layout
 
+\begin_layout Subsection
+Structure
+\end_layout
+
 \begin_layout Frame
 \begin_inset Argument 4
 status open
@@ -1764,6 +1776,10 @@ status open
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsection
+Naming
 \end_layout
 
 \begin_layout FragileFrame
