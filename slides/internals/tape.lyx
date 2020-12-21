@@ -6,7 +6,7 @@
 \origin unavailable
 \textclass beamer
 \begin_preamble
-\usetheme{Warsaw}
+\usetheme{AnnArbor}
 \setbeamercovered{transparent}
 \end_preamble
 \use_default_options true
@@ -102,7 +102,7 @@ Modules
 status open
 
 \begin_layout Plain Layout
-Modules
+Tape Modules
 \end_layout
 
 \end_inset
@@ -112,21 +112,23 @@ Modules
 
 \begin_deeper
 \begin_layout Itemize
-(Ported from Duct.)
+(Ported to cljc from Duct-Framework)
 \end_layout
 
 \begin_layout Itemize
-The configuration is initiated twice.
+The configuration is initiated twice:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+first, into an intermediate configuration,
 \end_layout
 
 \begin_layout Itemize
-First into an intermediate configuration,
+which in turn: is initiated into the system.
 \end_layout
 
-\begin_layout Itemize
-which in turn is initiated into the system.
-\end_layout
-
+\end_deeper
 \end_deeper
 \begin_layout FragileFrame
 \begin_inset Float figure
@@ -197,7 +199,7 @@ Modules
 status open
 
 \begin_layout Plain Layout
-Components
+Components: two types
 \end_layout
 
 \end_inset
@@ -207,20 +209,83 @@ Components
 
 \begin_deeper
 \begin_layout Itemize
-Note: two types of components:
+Module components (type 1):
 \end_layout
 
 \begin_deeper
 \begin_layout Itemize
-Module components: fns that add to the config map.
+initialize into functions that
 \end_layout
 
 \begin_layout Itemize
-System components: whatever.
+merge data into the system config map.
 \end_layout
 
 \end_deeper
+\begin_layout Itemize
+Module components are mostly:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Controller modules: add Re-Frame function components.
+\end_layout
+
+\begin_layout Itemize
+View modules: add Reagent view function components.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+System components (type 2): whatever else, but mostly:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Re-Frame registerable functions and
+\end_layout
+
+\begin_layout Itemize
+Reagent view functions.
+\end_layout
+
+\end_deeper
+\end_deeper
 \begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout FragileFrame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Init process
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Read module config edn.
+\end_layout
+
+\begin_layout Itemize
+Prep module config into system config.
+\end_layout
+
+\begin_layout Itemize
+Init system.
+\end_layout
+
+\end_deeper
+\begin_layout FragileFrame
 \begin_inset Float figure
 wide false
 sideways false
@@ -233,19 +298,31 @@ status open
 
 \begin_layout Plain Layout
 
-(defmethod ig/init-key :tape/const [_ v] v)
+{:tape.mvc.controller/module nil
+\end_layout
+
+\begin_layout Plain Layout
+
+ :tape.mvc.view/module nil
+\end_layout
+
+\begin_layout Plain Layout
+
+ ...
+\end_layout
+
+\begin_layout Plain Layout
+
+ :tape.toasts.controller/module nil}
 \end_layout
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Plain Layout
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Need later
+resources/myapp/config.edn
 \end_layout
 
 \end_inset
@@ -258,7 +335,51 @@ Need later
 
 \end_layout
 
-\end_deeper
+\begin_layout FragileFrame
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+(def module-conf (m/read-config "myapp/config.edn"))
+\end_layout
+
+\begin_layout Plain Layout
+
+(def system-conf (m/prep-config module-conf))
+\end_layout
+
+\begin_layout Plain Layout
+
+(def system (ig/init system-conf))
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+src/myapp/core.clj
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 System
 \end_layout
@@ -323,6 +444,10 @@ status open
 
 \begin_layout Plain Layout
 
+\end_layout
+
+\begin_layout Plain Layout
+
 (rf/reg-event-db ::index
 \end_layout
 
@@ -333,7 +458,7 @@ status open
 
 \begin_layout Plain Layout
 
-    {:people [...]}))
+    {::people (...)}))
 \end_layout
 
 \end_inset
@@ -386,6 +511,10 @@ status open
 \begin_layout Plain Layout
 
 (ns my.app.people.view)
+\end_layout
+
+\begin_layout Plain Layout
+
 \end_layout
 
 \begin_layout Plain Layout
@@ -452,7 +581,15 @@ Use Integrant
 
 \begin_deeper
 \begin_layout Itemize
-Begone globals.
+Use Integrant to do away with globals.
+\end_layout
+
+\begin_layout Itemize
+(Re-)
+\series bold
+Frame
+\series default
+ registration done by a separate Integrant component.
 \end_layout
 
 \end_deeper
@@ -493,6 +630,10 @@ status open
 
 \begin_layout Plain Layout
 
+\end_layout
+
+\begin_layout Plain Layout
+
 (defmethod ig/init-key
 \end_layout
 
@@ -508,7 +649,12 @@ status open
 
 \begin_layout Plain Layout
 
-    {:people [...]}))
+    {::people (...)
+\end_layout
+
+\begin_layout Plain Layout
+
+     ::filtered false}))
 \end_layout
 
 \end_inset
@@ -565,6 +711,10 @@ status open
 
 \begin_layout Plain Layout
 
+\end_layout
+
+\begin_layout Plain Layout
+
 (defmethod ig/init-key 
 \end_layout
 
@@ -580,7 +730,12 @@ status open
 
 \begin_layout Plain Layout
 
-    (for [p peps] [:p p])))
+    (for [person people]
+\end_layout
+
+\begin_layout Plain Layout
+
+      [:p person])))
 \end_layout
 
 \end_inset
@@ -632,6 +787,10 @@ Automate use Integrant
 
 \begin_deeper
 \begin_layout Itemize
+Start with plain functions.
+\end_layout
+
+\begin_layout Itemize
 Leverage Integrant keys inheritance.
 \end_layout
 
@@ -673,12 +832,25 @@ status open
 
 \begin_layout Plain Layout
 
+\end_layout
+
+\begin_layout Plain Layout
+
 (defn index [db _] 
 \end_layout
 
 \begin_layout Plain Layout
 
-  {:people [...]})
+  {::people (...)
+\end_layout
+
+\begin_layout Plain Layout
+
+   ::filtered false})
+\end_layout
+
+\begin_layout Plain Layout
+
 \end_layout
 
 \begin_layout Plain Layout
@@ -745,12 +917,25 @@ status open
 
 \begin_layout Plain Layout
 
+\end_layout
+
+\begin_layout Plain Layout
+
 (defn index []
 \end_layout
 
 \begin_layout Plain Layout
 
-  (for [p peeps] [:p p]))
+  (for [person people]
+\end_layout
+
+\begin_layout Plain Layout
+
+    [:p person]))
+\end_layout
+
+\begin_layout Plain Layout
+
 \end_layout
 
 \begin_layout Plain Layout
@@ -816,7 +1001,7 @@ Use Modules
 
 \begin_deeper
 \begin_layout Itemize
-Modules are buckets of handlers, subscritptions, view fns.
+Modules are buckets of handlers, subscritptions, view functions.
 \end_layout
 
 \end_deeper
@@ -849,11 +1034,6 @@ status open
 \begin_inset listings
 inline false
 status open
-
-\begin_layout Plain Layout
-
-;; cont'd from above
-\end_layout
 
 \begin_layout Plain Layout
 
@@ -926,11 +1106,6 @@ status open
 \begin_inset listings
 inline false
 status open
-
-\begin_layout Plain Layout
-
-;; cont'd from above
-\end_layout
 
 \begin_layout Plain Layout
 
@@ -1006,7 +1181,264 @@ Automate use Modules
 
 \begin_deeper
 \begin_layout Itemize
-Have to annotate fns.
+Have to annotate functions.
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+defmodule
+\series default
+:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+inspects the namespace,
+\end_layout
+
+\begin_layout Itemize
+expands into modules above.
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout FragileFrame
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "39text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+(c/defmodule)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Controller module
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "60text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+(v/defmodule my.app.p.controller)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+View module
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout FragileFrame
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+(defmethod ig/init-key :tape/const [_ v] v)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Note
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+MVC
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Leverage Intuitions
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+
+\series bold
+MVC
+\series default
+ is well understood, let's use it in naming.
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Controller: Re-Frame stuff.
+\end_layout
+
+\begin_layout Itemize
+View: Reagent stuff.
+\end_layout
+
+\begin_layout Itemize
+Model: whatever.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+An 
+\series bold
+App
+\series default
+ is is multiple MVC triples.
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout FragileFrame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Leverage Metadata
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Annotate functions, conveys what they 
+\series bold
+are
+\series default
+.
+\end_layout
+
+\begin_layout Itemize
+Automate module definition via 
+\series bold
+defmodule
+\series default
+.
 \end_layout
 
 \end_deeper
@@ -1037,31 +1469,54 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset listings
+lstparams "basicstyle={\scriptsize}"
 inline false
 status open
 
 \begin_layout Plain Layout
 
+(ns my.app.people.controller)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+(defn ^::c/event-db show [db _]
+\end_layout
+
+\begin_layout Plain Layout
+
+  {::person (...)})
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+(defn ^::c/sub person [db _]
+\end_layout
+
+\begin_layout Plain Layout
+
+  (::person db)) 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
 (c/defmodule)
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-;; inspects ns
-\end_layout
-
-\begin_layout Plain Layout
-
-;; expands into
-\end_layout
-
-\begin_layout Plain Layout
-
-;; module above
 \end_layout
 
 \end_inset
@@ -1108,8 +1563,47 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset listings
+lstparams "basicstyle={\scriptsize}"
 inline false
 status open
+
+\begin_layout Plain Layout
+
+(ns my.app.people.view)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+(defn ^::v/view show []
+\end_layout
+
+\begin_layout Plain Layout
+
+  (let [person
+\end_layout
+
+\begin_layout Plain Layout
+
+        @(v/subscribe
+\end_layout
+
+\begin_layout Plain Layout
+
+          people.c/person)]
+\end_layout
+
+\begin_layout Plain Layout
+
+    [:p person]))
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
 
 \begin_layout Plain Layout
 
@@ -1118,22 +1612,7 @@ status open
 
 \begin_layout Plain Layout
 
- my.app.p.controller)
-\end_layout
-
-\begin_layout Plain Layout
-
-;; inspects ns
-\end_layout
-
-\begin_layout Plain Layout
-
-;; expands into
-\end_layout
-
-\begin_layout Plain Layout
-
-;; module above
+  my.app.people.controller)
 \end_layout
 
 \end_inset
@@ -1163,16 +1642,19 @@ View module
 
 \end_layout
 
-\begin_layout Section
-MVC
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
 \end_layout
 
-\begin_layout Frame
+\begin_layout FragileFrame
 \begin_inset Argument 4
 status open
 
 \begin_layout Plain Layout
-Leverage Intuitions
+Module discovery
 \end_layout
 
 \end_inset
@@ -1182,22 +1664,101 @@ Leverage Intuitions
 
 \begin_deeper
 \begin_layout Itemize
-MVC is well understood, let's use it in naming.
+Requiring each view and controller module is tedious.
 \end_layout
 
 \begin_layout Itemize
-Controller: Re-Frame stuff.
-\end_layout
+\begin_inset Quotes eld
+\end_inset
 
-\begin_layout Itemize
-View: Reagent stuff.
-\end_layout
+Module discovery
+\begin_inset Quotes erd
+\end_inset
 
-\begin_layout Itemize
-Model: whatever.
+ finds them by name pattern.
 \end_layout
 
 \end_deeper
+\begin_layout FragileFrame
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+(mvc/require-modules "src/myname/myapp/app")
+\end_layout
+
+\begin_layout Plain Layout
+
+;; (require '[myname.myapp.app.this.view])
+\end_layout
+
+\begin_layout Plain Layout
+
+;; (require '[myname.myapp.app.that.controller])
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+(let [{:keys [modules routes]} 
+\end_layout
+
+\begin_layout Plain Layout
+
+      (mvc/modules-discovery "src/myname/myapp/app")]
+\end_layout
+
+\begin_layout Plain Layout
+
+  ...add modules and routes to config map...)
+\end_layout
+
+\begin_layout Plain Layout
+
+;; modules is a map:
+\end_layout
+
+\begin_layout Plain Layout
+
+;; {:myname.myapp.app.this.view/module nil
+\end_layout
+
+\begin_layout Plain Layout
+
+;;  :myname.myapp.app.that.controller/module nil}
+\end_layout
+
+\begin_layout Plain Layout
+
+;; routes is a vector:
+\end_layout
+
+\begin_layout Plain Layout
+
+;; - of routes in each controller module.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Standard
 \begin_inset Separator plain
 \end_inset
@@ -1220,7 +1781,7 @@ Consistent Naming
 
 \begin_deeper
 \begin_layout Itemize
-Force: event names to be namespaced.
+Force: event names to be namespaced (by real, existing namespaces).
 \end_layout
 
 \begin_layout Itemize
@@ -1281,7 +1842,7 @@ my.app.people.view/index        ;; view
 status open
 
 \begin_layout Plain Layout
-Leverage Metadata
+Make calls navigable
 \end_layout
 
 \end_inset
@@ -1291,13 +1852,35 @@ Leverage Metadata
 
 \begin_deeper
 \begin_layout Itemize
-Annotate fns.
+Event dispatches bear some analogy to function calls.
 \end_layout
 
 \begin_layout Itemize
-Automate module definition via defmodule.
+They should be navigable as well (
+\begin_inset Quotes eld
+\end_inset
+
+jump to definition
+\begin_inset Quotes erd
+\end_inset
+
+).
 \end_layout
 
+\begin_layout Itemize
+v/subscribe & v/dispatch are macros:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+use handler & subscription symbols,
+\end_layout
+
+\begin_layout Itemize
+macroexpand to normal Re-Frame.
+\end_layout
+
+\end_deeper
 \end_deeper
 \begin_layout FragileFrame
 \begin_inset Float figure
@@ -1331,22 +1914,12 @@ status open
 
 \begin_layout Plain Layout
 
-(ns my.app.p.controller)
+(v/dispatch
 \end_layout
 
 \begin_layout Plain Layout
 
-(defn ::c/event-db
-\end_layout
-
-\begin_layout Plain Layout
-
-  index [db _] 
-\end_layout
-
-\begin_layout Plain Layout
-
-  {:people [...]})
+  [people.c/index])
 \end_layout
 
 \begin_layout Plain Layout
@@ -1355,7 +1928,12 @@ status open
 
 \begin_layout Plain Layout
 
-(c/defmodule)
+(rf/dispatch
+\end_layout
+
+\begin_layout Plain Layout
+
+  [::people.c/index])
 \end_layout
 
 \end_inset
@@ -1367,7 +1945,7 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Controller module
+Dispatch
 \end_layout
 
 \end_inset
@@ -1407,32 +1985,26 @@ status open
 
 \begin_layout Plain Layout
 
-(ns my.app.people.view)
+(v/subscribe
 \end_layout
 
 \begin_layout Plain Layout
 
-(defn ::v/view 
+  [people.c/person])
 \end_layout
 
 \begin_layout Plain Layout
 
-  index []
 \end_layout
 
 \begin_layout Plain Layout
 
-  (for [p peps] [:p p]))
+(rf/subscribe
 \end_layout
 
 \begin_layout Plain Layout
 
-(v/defmodule
-\end_layout
-
-\begin_layout Plain Layout
-
- my.app.p.controller)
+  [::people.c/person])
 \end_layout
 
 \end_inset
@@ -1444,7 +2016,7 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-View module
+Subscribe
 \end_layout
 
 \end_inset
@@ -1459,6 +2031,10 @@ View module
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Standard
 
 \end_layout
 

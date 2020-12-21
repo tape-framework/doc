@@ -8,13 +8,15 @@ STATUS: Pre-alpha, in design and prototyping phase.
 
 `tape.doc`
 
-Tape Framework documentation.  
-Start with the [Tutorial](docs/Tutorial.md).
+Tape Framework documentation.
 
 #### Sections
 
 - `docs` documentation
+  * [Internals](docs/Internals.pdf) pdf slides
+  * [Tutorial](docs/Tutorial.md)
 - `ANNs` announcements
+  * [pre.alpha](ANNs/0-pre.alpha.md)
 
 #### License
 
