@@ -1225,7 +1225,7 @@ has_inner_box 1
 inner_pos "t"
 use_parbox 0
 use_makebox 0
-width "39text%"
+width "45text%"
 special "none"
 height "1in"
 height_special "totalheight"
@@ -1277,7 +1277,7 @@ has_inner_box 1
 inner_pos "t"
 use_parbox 0
 use_makebox 0
-width "60text%"
+width "45text%"
 special "none"
 height "1in"
 height_special "totalheight"
@@ -1295,7 +1295,7 @@ status open
 
 \begin_layout Plain Layout
 
-(v/defmodule my.app.p.controller)
+(v/defmodule)
 \end_layout
 
 \end_inset
@@ -1524,10 +1524,6 @@ status open
 
 \begin_layout Plain Layout
 
-\end_layout
-
-\begin_layout Plain Layout
-
 (c/defmodule)
 \end_layout
 
@@ -1619,12 +1615,7 @@ status open
 
 \begin_layout Plain Layout
 
-(v/defmodule
-\end_layout
-
-\begin_layout Plain Layout
-
-  my.app.people.controller)
+(v/defmodule)
 \end_layout
 
 \end_inset
@@ -1723,42 +1714,22 @@ status open
 
 \begin_layout Plain Layout
 
-(let [{:keys [modules routes]} 
+(def config ;; modules system config map
 \end_layout
 
 \begin_layout Plain Layout
 
-      (mvc/modules-discovery "src/myname/myapp/app")]
+  (merge
 \end_layout
 
 \begin_layout Plain Layout
 
-  ...add modules and routes to config map...)
+   (mvc/modules-map "src/myname/myapp/app")
 \end_layout
 
 \begin_layout Plain Layout
 
-;; modules is a map:
-\end_layout
-
-\begin_layout Plain Layout
-
-;; {:myname.myapp.app.this.view/module nil
-\end_layout
-
-\begin_layout Plain Layout
-
-;;  :myname.myapp.app.that.controller/module nil}
-\end_layout
-
-\begin_layout Plain Layout
-
-;; routes is a vector:
-\end_layout
-
-\begin_layout Plain Layout
-
-;; - of routes in each controller module.
+   (module/read-config "myname/myapp/config.edn")))
 \end_layout
 
 \end_inset
@@ -1944,6 +1915,15 @@ status open
 
 \begin_layout Plain Layout
 
+;; becomes
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
 (rf/dispatch
 \end_layout
 
@@ -2007,6 +1987,15 @@ status open
 \begin_layout Plain Layout
 
   [people.c/person])
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+;; becomes
 \end_layout
 
 \begin_layout Plain Layout

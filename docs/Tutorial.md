@@ -198,9 +198,8 @@ There can be a name correspondence between a controller event handler and a view
 `hello.c/index` <-> `hello.v/index`. If there is such a correspondence, after the handler runs, if there is no 
 `::v/current` in set app-db, our view function is automatically set as current (by an interceptor).  
 
-At the end we call the `(v/defmodule myname.myapp.app.hello.controller)` macro that inspects the namespace and defines a
-`tape.module`. This is added in the modules config map by "modules discovery". Note that the argument here is the 
-corresponding controller namespace, as a symbol, **fully qualified**.
+At the end we call the `(v/defmodule)` macro that inspects the namespace and defines a `tape.module`. This is added in
+the modules config map by "modules discovery".
 
 Let's add a button that calls our `hello.c/change` handler:
 
