@@ -153,7 +153,9 @@ DSL. The generated app has a sample controller in `myname/myapp/app/hello/contro
 handler:
 
 ```clojure
-(defn ^::c/event-db index [_db [_ev-id _params]]
+(defn index
+  {::c/reg ::c/event-db}
+  [_db [_ev-id _params]]
   {::say "Hello Tape Framework!"})
 ```
 
@@ -162,15 +164,18 @@ there is a correspondence between event names and handler names). Let's add anot
 greeting:
 
 ```clojure
-(defn ^::c/event-db change [db [_ev-id _params]]
+(defn change
+  {::c/reg ::c/event-db}
+  [db [_ev-id _params]]
   (assoc db ::say "Hello World!"))
 ```
 
 We also have a subscription in our `hello` controller for our greeting:
 
 ```clojure
-(defn ^::c/sub say [db _query]
-  (::say db))
+(defn say
+  {::c/reg ::c/sub}
+  [db _query] (::say db))
 ```
 
 At the end we call the `(c/defmodule)` macro that inspects the namespace and defines a `tape.module`. This is added in
@@ -189,7 +194,9 @@ Views are namespaces with Reagent functions. Functions that can become the "curr
 app has a sample view in `myname/myapp/app/hello/view.cljs`. In it, we have Reagent function:
 
 ```clojure
-(defn ^::v/view index []
+(defn index
+  {::v/reg ::v/view}
+  []
   (let [say @(rf/subscribe [::hello.c/say])]
     [:p.hello-tape say]))
 ```
@@ -204,7 +211,9 @@ the modules config map by "modules discovery".
 Let's add a button that calls our `hello.c/change` handler:
 
 ```clojure
-(defn ^::v/view index []
+(defn index
+  {::v/reg ::v/view}
+  []
   (let [say @(rf/subscribe [::hello.c/say])]
     [:p.hello-tape say]
     [:button.button {:on-click #(rf/dispatch [::hello.c/change])}]))
@@ -222,7 +231,7 @@ The `tape.router` module adds routing capabilities based on [Reitit](https://git
 defined in controllers at the beginning in a var named `routes`. Our sample `hello` controller has the following routes:
 
 ```clojure
-(def routes
+(def ^{::c/reg ::c/routes} routes
   ["" {:coercion rcs/coercion}
    ["/say" ::index]])
 ```
@@ -233,7 +242,7 @@ When the page navigates to "http://localhost:9500/#/say" the event `[::hello.c/i
 `params` contains path and query params matched by the route. Let's add a new route to our `change` handler: 
 
 ```clojure
-(def routes
+(def ^{::c/reg ::c/routes} routes
   ["" {:coercion rcs/coercion}
    ["/say" ::index]
    ["/change/:to" ::change]])
@@ -242,14 +251,18 @@ When the page navigates to "http://localhost:9500/#/say" the event `[::hello.c/i
 And let's make our `change` handler aware of the `:to` param:
 
 ```clojure
-(defn ^::c/event-db change [db [_ev-id params]]
+(defn change
+  {::c/reg ::c/event-db}
+  [db [_ev-id params]]
   (assoc db ::say (-> params :path :to)))
 ```
 
 We can now change our button in the view to a link:
 
 ```clojure
-(defn ^::v/view index []
+(defn index
+  {::v/reg ::v/view}
+  []
   (let [say @(rf/subscribe [::hello.c/say])]
     [:p.hello-tape say]
     [:a.button {:href (router/href* [::hello.c/change {:to "Wazaaa"}])}]))
@@ -295,12 +308,14 @@ We start by creating a controller with:
 (ns myname.myapp.app.guis.login.controller
   (:require [tape.mvc.controller :as c :include-macros true]))
 
-(defn ^::c/event-db field
+(defn field
   "Assoc in app-db login map value v at key k."
+  {::c/reg ::c/event-db}
   [db [_ k v]] (assoc-in db [::login k] v))
 
-(defn ^::c/sub login
+(defn login
   "Subscription to the login map"
+  {::c/reg ::c/sub}
   [db _] (::login db))
 
 (c/defmodule)
@@ -328,22 +343,28 @@ Finally, we attempt login by dispatching an event if the HTML5 Validation API do
      [:div.field
       [:label.label "Email"]
       [:div.control
-       [form/field {:type :text, :class "input", :source lens, :field :email, :required true}]]]
+       [form/field {:type :text, :class "input", :source lens,
+                    :field :email, :required true}]]]
      [:div.field
       [:label.label "Password"]
       [:div.control
-       [form/field {:type :password, :class "input", :source lens, :field :password, :required true}]]]]))
+       [form/field {:type :password, :class "input", :source lens,
+                    :field :password, :required true}]]]]))
 
-(defn ^::v/view new []
+(defn new
+  {::v/reg ::v/view}
+  []
   [:form
    [:h2 "Login"]
    [form-fields]
    [:div.field
     [:label.label "Password"]
     [:div.control
-     [:button.button.is-primary {:on-click (form/when-valid #(rf/dispatch [::login.c/create]))} "Log in"]]]])
+     [:button.button.is-primary
+      {:on-click (form/when-valid #(rf/dispatch [::login.c/create]))}
+      "Log in"]]]])
 
-(c/defmodule myname.myapp.app.guis.login.controller)
+(c/defmodule) ;; myname.myapp.app.guis.login.controller must exist
 ```
 
 #### Toasts notifications
@@ -354,7 +375,9 @@ dispatch `(rf/dispatch [::toasts.c/create :info "Some message"])`. Toast kind ca
 `:warning`, `:info`. Example in controller handler:
 
 ```clojure
-(defn ^::c/event-fx create [{:keys [db]} _]
+(defn create
+  {::c/reg ::c/event-fx}
+  [{:keys [db]} _]
   {:db         (update db ::people conj (::person db))
    :dispatch-n [[::router/navigate [::index]]
                 [::toasts.c/create :success "Person added!"]]})
