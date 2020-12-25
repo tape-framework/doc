@@ -358,7 +358,6 @@ Finally, we attempt login by dispatching an event if the HTML5 Validation API do
    [:h2 "Login"]
    [form-fields]
    [:div.field
-    [:label.label "Password"]
     [:div.control
      [:button.button.is-primary
       {:on-click (form/when-valid #(rf/dispatch [::login.c/create]))}
