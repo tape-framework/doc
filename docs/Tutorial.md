@@ -105,6 +105,7 @@ Note we assume the following namespaces below:
  [re-frame.core :as rf]
  [tape.mvc.controller :as c :include-macros true]
  [tape.mvc.view :as v :include-macros true]
+ [tape.current :as current]
  [tape.router :as router]
  [tape.toasts.controller :as toasts.c]
  [tape.toasts.view :as toasts.v]
@@ -119,7 +120,7 @@ entrypoint to our app. In it, we define an HTML page layout and render the "curr
 
 ```clojure
 (defn app []
-  (let [current-view-fn @(rf/subscribe [::v/current-fn])]
+  (let [current-view-fn @(rf/subscribe [::current/view-fn])]
     [:<>
      [:section.section
       [:div.container
@@ -132,18 +133,18 @@ The "current page" that changes alongside the URL (whether via hash-change or Hi
 that we decided to make it available by default in Tape. You don't have to necessarily use it, but if you want to, it's
 available.
 
-The "current view" is a reagent view function that can be changed by manipulating `::v/current` entry in app-db. It's 
+The "current view" is a reagent view function that can be changed by manipulating `::current/view` entry in app-db. It's 
 value must be a namespaced keyword mapping to a controller handler (more on that later):
 
 ```clojure
-{::v/current ::hello.c/index} ;; points to hello.v/index
+{::current/view ::hello.c/index} ;; points to hello.v/index
 ```
 
 Note that we use the controller in the value. There are two existing subscriptions:
 
 ```clojure
-(rf/subscribe [::v/current]) ;; yields the keyword ::hello.c/index
-(rf/subscribe [::v/current-fn]) ;; yields the function hello.v/index
+(rf/subscribe [::current/view]) ;; yields the keyword ::hello.c/index
+(rf/subscribe [::current/view-fn]) ;; yields the function hello.v/index
 ```
 
 #### Controllers
@@ -203,7 +204,7 @@ app has a sample view in `myname/myapp/app/hello/view.cljs`. In it, we have Reag
 
 There can be a name correspondence between a controller event handler and a view function, in our case here:
 `hello.c/index` <-> `hello.v/index`. If there is such a correspondence, after the handler runs, if there is no 
-`::v/current` in set app-db, our view function is automatically set as current (by an interceptor).  
+`::current/view` in set app-db, our view function is automatically set as current (by an interceptor).  
 
 At the end we call the `(v/defmodule)` macro that inspects the namespace and defines a `tape.module`. This is added in
 the modules config map by "modules discovery".
