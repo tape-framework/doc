@@ -390,12 +390,12 @@ When dispatching and subscribing, we have a number of macros called the
 ending in *), except they take a symbol instead of a keyword in the first
 position of the vector. This symbol is IDE navigable ("jump to definition").
 The macros macroexpand to the standard API, thus have no runtime cost. Also
-added vaue: the handler existance is checked at compile time, and typos are
+added value: the handler existence is checked at compile time, and typos are
 avoided.
 
 ```clojure
-(v/dispatch [posts.c/index])                ;; => (rf/dispatch [::posts.c/index])
-(v/subscribe [posts.c/posts])               ;; => (rf/subscribe [::posts.c/posts])
+(tools/dispatch [posts.c/index])            ;; => (rf/dispatch [::posts.c/index])
+(tools/subscribe [posts.c/posts])           ;; => (rf/subscribe [::posts.c/posts])
 (router/href [greet.c/hi {:say "Hi!"}])     ;; => (router/href* [::greet.c/hi {:say "Hi!"}])
 (router/navigate [greet.c/hi {:say "Hi!"}]) ;; => (router/navigate* [::greet.c/hi {:say "Hi!"}])
 (tools/lens posts.c/post posts.c/field)     ;; => (tools/lens* ::posts.c/post ::posts.c/field)
