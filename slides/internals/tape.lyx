@@ -1363,6 +1363,260 @@ Note
 
 \end_layout
 
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout FragileFrame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Gist: the right thing is sugar for the left thing
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout FragileFrame
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+(ns my.app.p.controller)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+(defmethod ig/init-key
+\end_layout
+
+\begin_layout Plain Layout
+
+  ::index [_ _]
+\end_layout
+
+\begin_layout Plain Layout
+
+  (fn [db _] 
+\end_layout
+
+\begin_layout Plain Layout
+
+    {::people (...)}))
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+(derive ::index
+\end_layout
+
+\begin_layout Plain Layout
+
+        ::c/event-db)
+\end_layout
+
+\begin_layout Plain Layout
+
+(defmethod ig/init-key
+\end_layout
+
+\begin_layout Plain Layout
+
+  ::module [_ _]
+\end_layout
+
+\begin_layout Plain Layout
+
+  (fn [config]
+\end_layout
+
+\begin_layout Plain Layout
+
+    (merge config 
+\end_layout
+
+\begin_layout Plain Layout
+
+      {::index nil})))
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Controller module
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45text%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+(ns my.app.p.controller)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+(defn index
+\end_layout
+
+\begin_layout Plain Layout
+
+  {::c/reg ::c/event-db}
+\end_layout
+
+\begin_layout Plain Layout
+
+  [db _]
+\end_layout
+
+\begin_layout Plain Layout
+
+  {::people (...)})
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+(c/defmodule)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+View module
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 MVC
 \end_layout
@@ -1412,7 +1666,7 @@ An
 \series bold
 App
 \series default
- is is multiple MVC triples.
+ is multiple MVC triples.
 \end_layout
 
 \end_deeper
