@@ -103,8 +103,7 @@ Note we assume the following namespaces below:
 (:require
  [reagent.core :as r]
  [re-frame.core :as rf]
- [tape.mvc.controller :as c :include-macros true]
- [tape.mvc.view :as v :include-macros true]
+ [tape.mvc :as mvc :include-macros true]
  [tape.router :as router]
  [tape.tools.current.controller :as current.c]
  [tape.toasts.controller :as toasts.c]
@@ -155,7 +154,7 @@ handler:
 
 ```clojure
 (defn index
-  {::c/reg ::c/event-db}
+  {::mvc/reg ::mvc/event-db}
   [_db [_ev-id _params]]
   {::say "Hello Tape Framework!"})
 ```
@@ -166,7 +165,7 @@ greeting:
 
 ```clojure
 (defn change
-  {::c/reg ::c/event-db}
+  {::mvc/reg ::mvc/event-db}
   [db [_ev-id _params]]
   (assoc db ::say "Hello World!"))
 ```
@@ -175,12 +174,12 @@ We also have a subscription in our `hello` controller for our greeting:
 
 ```clojure
 (defn say
-  {::c/reg ::c/sub}
+  {::mvc/reg ::mvc/sub}
   [db _query] (::say db))
 ```
 
-At the end we call the `(c/defmodule)` macro that inspects the namespace and defines a `tape.module`. This is added in
-the modules config map by "modules discovery".
+At the end we call the `(mvc/defm ::module)` macro that inspects the namespace and defines a `tape.module`. This is
+added in the modules config map by "modules discovery".
 
 When a controller namespace is required in another namespace, the naming convention is as follows:
 
@@ -191,12 +190,12 @@ When a controller namespace is required in another namespace, the naming convent
 #### Views
 
 Views are namespaces with Reagent functions. Functions that can become the "current view" must be annotated with 
-`^::v/view` and we call them view functions. Reagent functions that are not annotated we call partials. The generated 
+`^::mvc/view` and we call them view functions. Reagent functions that are not annotated we call partials. The generated 
 app has a sample view in `myname/myapp/app/hello/view.cljs`. In it, we have Reagent function:
 
 ```clojure
 (defn index
-  {::v/reg ::v/view}
+  {::mvc/reg ::mvc/view}
   []
   (let [say @(rf/subscribe [::hello.c/say])]
     [:p.hello-tape say]))
@@ -206,14 +205,14 @@ There can be a name correspondence between a controller event handler and a view
 `hello.c/index` <-> `hello.v/index`. If there is such a correspondence, after the handler runs, if there is no 
 `::current.c/view` in set app-db, our view function is automatically set as current (by an interceptor).  
 
-At the end we call the `(v/defmodule)` macro that inspects the namespace and defines a `tape.module`. This is added in
-the modules config map by "modules discovery".
+At the end we call the `(mvc/defm ::module)` macro that inspects the namespace and defines a `tape.module`. This
+is added in the modules config map by "modules discovery".
 
 Let's add a button that calls our `hello.c/change` handler:
 
 ```clojure
 (defn index
-  {::v/reg ::v/view}
+  {::mvc/reg ::mvc/view}
   []
   (let [say @(rf/subscribe [::hello.c/say])]
     [:p.hello-tape say]
@@ -232,7 +231,7 @@ The `tape.router` module adds routing capabilities based on [Reitit](https://git
 defined in controllers at the beginning in a var named `routes`. Our sample `hello` controller has the following routes:
 
 ```clojure
-(def ^{::c/reg ::c/routes} routes
+(def ^{::mvc/reg ::mvc/routes} routes
   ["" {:coercion rcs/coercion}
    ["/say" ::index]])
 ```
@@ -243,7 +242,7 @@ When the page navigates to "http://localhost:9500/#/say" the event `[::hello.c/i
 `params` contains path and query params matched by the route. Let's add a new route to our `change` handler: 
 
 ```clojure
-(def ^{::c/reg ::c/routes} routes
+(def ^{::mvc/reg ::mvc/routes} routes
   ["" {:coercion rcs/coercion}
    ["/say" ::index]
    ["/change/:to" ::change]])
@@ -253,7 +252,7 @@ And let's make our `change` handler aware of the `:to` param:
 
 ```clojure
 (defn change
-  {::c/reg ::c/event-db}
+  {::mvc/reg ::mvc/event-db}
   [db [_ev-id params]]
   (assoc db ::say (-> params :path :to)))
 ```
@@ -262,7 +261,7 @@ We can now change our button in the view to a link:
 
 ```clojure
 (defn index
-  {::v/reg ::v/view}
+  {::mvc/reg ::mvc/view}
   []
   (let [say @(rf/subscribe [::hello.c/say])]
     [:p.hello-tape say]
@@ -307,19 +306,19 @@ We start by creating a controller with:
 
 ```clojure
 (ns myname.myapp.app.guis.login.controller
-  (:require [tape.mvc.controller :as c :include-macros true]))
+  (:require [tape.mvc :as mvc :include-macros true]))
 
 (defn field
   "Assoc in app-db login map value v at key k."
-  {::c/reg ::c/event-db}
+  {::mvc/reg ::mvc/event-db}
   [db [_ k v]] (assoc-in db [::login k] v))
 
 (defn login
   "Subscription to the login map"
-  {::c/reg ::c/sub}
+  {::mvc/reg ::mvc/sub}
   [db _] (::login db))
 
-(c/defmodule)
+(mvc/defm ::module)
 ```
 
 ##### Form view
@@ -332,7 +331,7 @@ Finally, we attempt login by dispatching an event if the HTML5 Validation API do
 ```clojure
 (ns myname.myapp.app.guis.login.view
   (:require [re-frame.core :as rf]
-            [tape.mvc.view :as v :include-macros true]
+            [tape.mvc :as mvc :include-macros true]
             [tape.tools :as tools]
             [tape.tools.ui.form :as form]
             [myname.myapp.app.guis.login.controller :as login.c]))
@@ -353,7 +352,7 @@ Finally, we attempt login by dispatching an event if the HTML5 Validation API do
                     :field :password, :required true}]]]]))
 
 (defn new
-  {::v/reg ::v/view}
+  {::mvc/reg ::mvc/view}
   []
   [:form
    [:h2 "Login"]
@@ -364,7 +363,7 @@ Finally, we attempt login by dispatching an event if the HTML5 Validation API do
       {:on-click (form/when-valid #(rf/dispatch [::login.c/create]))}
       "Log in"]]]])
 
-(c/defmodule) ;; myname.myapp.app.guis.login.controller must exist
+(mvc/defm ::module) ;; myname.myapp.app.guis.login.controller must exist
 ```
 
 #### Toasts notifications
@@ -376,7 +375,7 @@ dispatch `(rf/dispatch [::toasts.c/create :info "Some message"])`. Toast kind ca
 
 ```clojure
 (defn create
-  {::c/reg ::c/event-fx}
+  {::mvc/reg ::mvc/event-fx}
   [{:keys [db]} _]
   {:db         (update db ::people conj (::person db))
    :dispatch-n [[::router/navigate [::index]]

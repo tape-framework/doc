@@ -306,22 +306,17 @@ status open
 
 \begin_layout Plain Layout
 
-{:tape.mvc.controller/module nil
+{:tape.mvc/module nil
 \end_layout
 
 \begin_layout Plain Layout
 
- :tape.mvc.view/module nil
+ :tape.toasts.controller/module nil
 \end_layout
 
 \begin_layout Plain Layout
 
- ...
-\end_layout
-
-\begin_layout Plain Layout
-
- :tape.toasts.controller/module nil}
+ ...}
 \end_layout
 
 \end_inset
@@ -1009,7 +1004,7 @@ Use Modules
 
 \begin_deeper
 \begin_layout Itemize
-Modules are buckets of handlers, subscritptions, view functions.
+Modules are buckets of handlers, subscriptions, view functions.
 \end_layout
 
 \end_deeper
@@ -1195,7 +1190,7 @@ Have to annotate functions with metadata.
 \begin_layout Itemize
 
 \series bold
-defmodule
+mvc/defm
 \series default
 :
 \end_layout
@@ -1243,7 +1238,7 @@ status open
 
 \begin_layout Plain Layout
 
-(c/defmodule)
+(mvc/defm ::module)
 \end_layout
 
 \end_inset
@@ -1295,7 +1290,7 @@ status open
 
 \begin_layout Plain Layout
 
-(v/defmodule)
+(mvc/defm ::module)
 \end_layout
 
 \end_inset
@@ -1453,7 +1448,7 @@ status open
 
 \begin_layout Plain Layout
 
-        ::c/event-db)
+        ::mvc/event-db)
 \end_layout
 
 \begin_layout Plain Layout
@@ -1544,7 +1539,7 @@ status open
 
 \begin_layout Plain Layout
 
-  {::c/reg ::c/event-db}
+  {::mvc/reg ::mvc/event-db}
 \end_layout
 
 \begin_layout Plain Layout
@@ -1587,7 +1582,7 @@ status open
 
 \begin_layout Plain Layout
 
-(c/defmodule)
+(mvc/defm ::module)
 \end_layout
 
 \end_inset
@@ -1755,7 +1750,7 @@ status open
 
 \begin_layout Plain Layout
 
-  {::c/reg ::c/event-db}
+  {::mvc/reg ::mvc/event-db}
 \end_layout
 
 \begin_layout Plain Layout
@@ -1774,7 +1769,7 @@ status open
 
 \begin_layout Plain Layout
 
-  {::c/reg ::c/sub}
+  {::mvc/reg ::mvc/sub}
 \end_layout
 
 \begin_layout Plain Layout
@@ -1788,7 +1783,7 @@ status open
 
 \begin_layout Plain Layout
 
-(c/defmodule)
+(mvc/defm ::module)
 \end_layout
 
 \end_inset
@@ -1855,7 +1850,7 @@ status open
 
 \begin_layout Plain Layout
 
-  {::v/reg ::v/view}
+  {::mvc/reg ::mvc/view}
 \end_layout
 
 \begin_layout Plain Layout
@@ -1889,7 +1884,7 @@ status open
 
 \begin_layout Plain Layout
 
-(v/defmodule)
+(mvc/defm ::module)
 \end_layout
 
 \end_inset
@@ -1969,17 +1964,17 @@ status open
 
 \begin_layout Plain Layout
 
-(mvc/require-modules "src/myname/myapp/app")
+(mvc/require-modules "src/myapp/app")
 \end_layout
 
 \begin_layout Plain Layout
 
-;; (require '[myname.myapp.app.this.view])
+;; (require '[myapp.app.this.view])
 \end_layout
 
 \begin_layout Plain Layout
 
-;; (require '[myname.myapp.app.that.controller])
+;; (require '[myapp.app.that.controller])
 \end_layout
 
 \begin_layout Plain Layout
@@ -1998,12 +1993,12 @@ status open
 
 \begin_layout Plain Layout
 
-   (mvc/modules-map "src/myname/myapp/app")
+   (mvc/modules-map "src/myapp/app")
 \end_layout
 
 \begin_layout Plain Layout
 
-   (module/read-config "myname/myapp/config.edn")))
+   (module/read-config "myapp/config.edn")))
 \end_layout
 
 \end_inset
@@ -2129,7 +2124,7 @@ jump to definition
 \end_layout
 
 \begin_layout Itemize
-v/subscribe & v/dispatch are macros:
+tools/subscribe & tools/dispatch are macros:
 \end_layout
 
 \begin_deeper
@@ -2175,7 +2170,7 @@ status open
 
 \begin_layout Plain Layout
 
-(v/dispatch
+(tools/dispatch
 \end_layout
 
 \begin_layout Plain Layout
@@ -2255,7 +2250,7 @@ status open
 
 \begin_layout Plain Layout
 
-(v/subscribe
+(tools/subscribe
 \end_layout
 
 \begin_layout Plain Layout
