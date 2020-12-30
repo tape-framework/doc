@@ -1,0 +1,25 @@
+image::https://i.giphy.com/media/AvMJCeu1EMmhG/giphy.webp[Tape]
+
+== README
+
+STATUS: Pre-alpha, in design and prototyping phase.
+
+=== About
+
+`tape.doc`
+
+Tape Framework documentation.
+
+=== Sections
+
+* `docs` documentation
+  - link:docs/Internals.pdf[Internals] pdf slides
+  - link:docs/Tutorial.adoc[Tutorial]
+* `ANNs` announcements
+  - link:ANNs/0-pre.alpha.adoc[pre.alpha]
+
+=== License
+
+Copyright © 2020 clyfe
+
+Distributed under the MIT license.
