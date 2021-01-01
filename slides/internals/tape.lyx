@@ -1392,7 +1392,7 @@ has_inner_box 1
 inner_pos "t"
 use_parbox 0
 use_makebox 0
-width "45text%"
+width "42text%"
 special "none"
 height "1in"
 height_special "totalheight"
@@ -1507,7 +1507,7 @@ has_inner_box 1
 inner_pos "t"
 use_parbox 0
 use_makebox 0
-width "45text%"
+width "53text%"
 special "none"
 height "1in"
 height_special "totalheight"
@@ -1697,8 +1697,11 @@ are
 \begin_layout Itemize
 Automate module definition via 
 \series bold
-defmodule
+mvc/defm
 \series default
+\color darkgray
+(odule)
+\color inherit
 .
 \end_layout
 
