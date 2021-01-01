@@ -1868,7 +1868,7 @@ status open
 
 \begin_layout Plain Layout
 
-        @(v/subscribe
+        @(mvc/subscribe
 \end_layout
 
 \begin_layout Plain Layout
