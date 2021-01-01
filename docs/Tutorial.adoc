@@ -129,8 +129,8 @@ Note we assume the following namespaces below:
 === Layouts and current view
 
 The generated app has in `app/layouts/app.cljs` a reagent function called `app`.
-This is mounted in the DOM and is the entrypoint to our app.
-In it, we define an HTML page layout and render the "current view".
+This is mounted in the DOM and is the entrypoint to our app. In it, we define an
+HTML page layout and render the "current view".
 
 .app/layouts/app.cljs
 [source,clojure]
@@ -145,11 +145,14 @@ In it, we define an HTML page layout and render the "current view".
      [toasts.v/index]]))
 ----
 
-The "current page" that changes alongside the URL (whether via hash-change or History API) is so established on the web that we decided to make it available by default in Tape.
-You don't have to necessarily use it, but if you want to, it's available.
+The "current page" that changes alongside the URL (whether via hash-change or
+History API) is so established on the web that we decided to make it available
+by default in Tape. You don't have to necessarily use it, but if you want to,
+it's available.
 
-The "current view" is a reagent view function that can be changed by manipulating `::current.c/view` entry in app-db.
-It's value must be a namespaced keyword mapping to a controller handler (more on that later):
+The "current view" is a reagent view function that can be changed by
+manipulating `::current.c/view` entry in app-db. It's value must be a namespaced
+keyword mapping to a controller handler (more on that later):
 
 .app-db
 [source,clojure]
@@ -157,8 +160,8 @@ It's value must be a namespaced keyword mapping to a controller handler (more on
 {::current.c/view ::hello.c/index} ;; points to hello.v/index
 ----
 
-Note that we use the controller in the value.
-There are two existing subscriptions:
+Note that we use the controller in the value. There are two existing
+subscriptions:
 
 [source,clojure]
 ----
@@ -166,11 +169,12 @@ There are two existing subscriptions:
 (rf/subscribe [::current.c/view-fn]) ;; yields the function hello.v/index
 ----
 
-#### Controllers
+=== Controllers
 
-Controllers are namespaces with Re-Frame handlers, but these are not registered directly to Re-Frame.
-We use a special DSL. The generated app has a sample controller in `myname/myapp/app/hello/controller.cljs`.
-In it we have an event handler:
+Controllers are namespaces with Re-Frame handlers, but these are not registered
+directly to Re-Frame. We use a special DSL. The generated app has a sample
+controller in `myname/myapp/app/hello/controller.cljs`. In it we have an event
+handler:
 
 .app/hello/controller.cljs
 [source,clojure]
@@ -181,8 +185,10 @@ In it we have an event handler:
   {::say "Hello Tape Framework!"})
 ----
 
-At startup, we dispatch the `[::home.c/index]` event that's handled by this handler (events are always namespaced and there is a correspondence between event names and handler names).
-Let's add another one below it that changes the greeting:
+At startup, we dispatch the `[::home.c/index]` event that's handled by this
+handler (events are always namespaced and there is a correspondence between
+event names and handler names). Let's add another one below it that changes the
+greeting:
 
 .app/hello/controller.cljs
 [source,clojure]
@@ -203,23 +209,25 @@ We also have a subscription in our `hello` controller for our greeting:
   [db _query] (::say db))
 ----
 
-At the end we call the `(mvc/defm ::module)` macro that inspects the namespace and defines a `tape.module`.
-This is added in the modules config map by "modules discovery".
+At the end we call the `(mvc/defm ::module)` macro that inspects the namespace
+and defines a `tape.module`. This is added in the modules config map by "modules
+discovery".
 
-When a controller namespace is required in another namespace, the naming convention is as follows:
+When a controller namespace is required in another namespace, the naming
+convention is as follows:
 
 [source,clojure]
 ----
 (:require [myname.myapp.app.hello.controller :as hello.c])
 ----
 
-#### Views
+=== Views
 
-Views are namespaces with Reagent functions.
-Functions that can become the "current view" must be annotated with `^::mvc/view` and we call them view functions.
-Reagent functions that are not annotated we call partials.
-The generated app has a sample view in `myname/myapp/app/hello/view.cljs`.
-In it, we have Reagent function:
+Views are namespaces with Reagent functions. Functions that can become the
+"current view" must be annotated with `^::mvc/view` and we call them view
+functions.Reagent functions that are not annotated we call partials. The
+generated app has a sample view in `myname/myapp/app/hello/view.cljs`. In it, we
+have Reagent function:
 
 .app/hello/view.cljs
 [source,clojure]
@@ -231,11 +239,14 @@ In it, we have Reagent function:
     [:p say]))
 ----
 
-There can be a name correspondence between a controller event handler and a view function, in our case here: `hello.c/index` -> `hello.v/index`.
-If there is such a correspondence, after the handler runs, if there is no `::current.c/view` in set app-db, our view function is automatically set as current (by an interceptor).
+There can be a name correspondence between a controller event handler and a view
+function, in our case here: `hello.c/index` -> `hello.v/index`. If there is such
+a correspondence, after the handler runs, if there is no `::current.c/view` in
+set app-db, our view function is automatically set as current (by an interceptor).
 
-At the end we call the `(mvc/defm ::module)` macro that inspects the namespace and defines a `tape.module`.
-This is added in the modules config map by "modules discovery".
+At the end we call the `(mvc/defm ::module)` macro that inspects the namespace
+and defines a `tape.module`. This is added in the modules config map by "modules
+discovery".
 
 Let's add a button that calls our `hello.c/change` handler:
 
@@ -250,7 +261,8 @@ Let's add a button that calls our `hello.c/change` handler:
     [:button.button {:on-click #(rf/dispatch [::hello.c/change])}]))
 ----
 
-When a view namespace is required in another namespace, the naming convention is as follows:
+When a view namespace is required in another namespace, the naming convention is
+as follows:
 
 [source,clojure]
 ----
@@ -260,9 +272,9 @@ When a view namespace is required in another namespace, the naming convention is
 === Routing
 
 The `tape.router` module adds routing capabilities based on
-[Reitit](https://github.com/metosin/reitit).
-Routes are defined in controllers at the beginning in a var named `routes`.
-Our sample `hello` controller has the following routes:
+[Reitit](https://github.com/metosin/reitit). Routes are defined in controllers
+at the beginning in a var named `routes`. Our sample `hello` controller has the
+following routes:
 
 .app/hello/controller.cljs
 [source,clojure]
@@ -272,11 +284,12 @@ Our sample `hello` controller has the following routes:
    ["/say" ::index]])
 ----
 
-When the URL of the page changes (via hash-change or History API - depending on how the router is configured in the config map - see `myname/myapp/core.clj`) and event corresponding to the matching route is dispatched.
-In our case above when the page navigates to `http://localhost:9500/#/say` the event
-`[::hello.c/index params]` is dispatched.
-The `params` contains path and query params matched by the route.
-Let's add a new route to our `change` handler:
+When the URL of the page changes (via hash-change or History API - depending on
+how the router is configured in the config map - see `myname/myapp/core.cljs`)
+and event corresponding to the matching route is dispatched. In our case above
+when the page navigates to `http://localhost:9500/#/say` the event
+`[::hello.c/index params]` is dispatched. The `params` contains path and query
+params matched by the route. Let's add a new route to our `change` handler:
 
 .app/hello/controller.cljs
 [source,clojure]
@@ -311,15 +324,16 @@ We can now change our button in the view to a link:
     [:a.button {:href (router/href* [::hello.c/change {:to "Wazaaa"}])}]))
 ----
 
-We used the name of the route and params, and Reitit assembled the route path for us (a sort of reverse routing).
-When we click the link the browse address changes to "localhost:9500/#/change/Wazaaa".
-This is matched by the router dispatching `[::hello.c/change {:path {:to "Wazaaa"}}]`.
-This is handled by
+We used the name of the route and params, and Reitit assembled the route path
+for us (a sort of reverse routing). When we click the link the browse address
+changes to "localhost:9500/#/change/Wazaaa". This is matched by the router
+dispatching `[::hello.c/change {:path {:to "Wazaaa"}}]`. This is handled by
 `hello.c/change` and the greeting is changed.
 
 === Timeouts and Intervals
 
-To be idiomatic when setting timeouts and intervals `tape.tools` offers the following modules for your `config.edn`:
+To be idiomatic when setting timeouts and intervals `tape.tools` offers the
+following modules for your `config.edn`:
 
 .resources/myname/myapp/config.edn
 [source,clojure]
@@ -338,17 +352,18 @@ To set a timeout dispatch the following event:
                :timeout [::timed-out]}]) ; dispatched on timeout
 ----
 
-To clear a timeout: `(rf/dispatch [::timeouts.c/clear timeout-id])`.
-Similar for intervals.
+To clear a timeout: `(rf/dispatch [::timeouts.c/clear timeout-id])`. Similar for
+intervals.
 
 === Working with forms
 
-A form with a number of fields is mapped to a hash-map in app-db.
-Let's say we have a login form with an email and password.
+A form with a number of fields is mapped to a hash-map in app-db. Let's say we
+have a login form with an email and password.
 
 ==== Form controller
 
 We start by creating a controller with:
+
 1. An event handler that sets a pair in the map.
 2. A subscription that reads the map.
 
@@ -373,11 +388,12 @@ We start by creating a controller with:
 
 ==== Form view
 
-In our corresponding view, we make a `form-fields` partial that will render the form fields.
-Using `tape.tools` lens we make a function that "gets" by reading the subscription and "sets" by dispatching an event.
-Using `tape.tools`'s
-`form/field` we make inputs that control our hash-map via the above lens function.
-Finally, we attempt login by dispatching an event if the HTML5 Validation API doesn't complain, via `form/when-valid`.
+In our corresponding view, we make a `form-fields` partial that will render the
+form fields. Using `tape.tools` lens we make a function that "gets" by reading
+the subscription and "sets" by dispatching an event. Using `tape.tools`'s
+`form/field` we make inputs that control our hash-map via the above lens
+function. Finally, we attempt login by dispatching an event if the HTML5
+Validation API doesn't complain, via `form/when-valid`.
 
 .app/login/view.cljs
 [source,clojure]
@@ -386,12 +402,12 @@ Finally, we attempt login by dispatching an event if the HTML5 Validation API do
   (:require [re-frame.core :as rf]
             [tape.mvc :as mvc :include-macros true]
             [tape.tools :as tools]
-            [tape.tools.ui.form :as form]
+            [tape.tools.ui.form :as form :include-macros true]
             [myname.myapp.app.guis.login.controller :as login.c]))
 
 (defn- form-fields []
-  (let [lens (tools/lens* ::login.c/login  ;; the subscription
-                          ::crud.c/field)] ;; the handler
+  (let [lens (mvc/lens* ::login.c/login  ;; the subscription
+                        ::crud.c/field)] ;; the handler
     [:<>
      [:div.field
       [:label.label "Email"]
@@ -421,12 +437,12 @@ Finally, we attempt login by dispatching an event if the HTML5 Validation API do
 
 === Toasts notifications
 
-Generally you want to notify the user of success/failure of various actions.
-The `tape.toasts` module allows you to flash such messages.
-If you used the Tape Framework app generator the module is already configured.
-To show a message dispatch `(rf/dispatch [::toasts.c/create :info "Some message"])`.
-Toast kind can be one of: `:success`, `:danger`,`:warning`, `:info`.
-Example in controller handler:
+Generally you want to notify the user of success/failure of various actions. The
+`tape.toasts` module allows you to flash such messages. If you used the Tape
+Framework app generator the module is already configured. To show a message
+dispatch `(rf/dispatch [::toasts.c/create :info "Some message"])`. Toast kind
+can be one of: `:success`, `:danger`,`:warning`, `:info`. Example in controller
+handler:
 
 .app/some/controller.cljs
 [source,clojure]
@@ -441,18 +457,19 @@ Example in controller handler:
 
 === Ergonomic API
 
-When dispatching and subscribing, we have a number of macros called the "Ergonomic API".
-These are equivalent to the ones in Re-Frame (or Tape - ending in *), except they take a symbol instead of a keyword in the first position of the vector.
-This symbol is IDE navigable ("jump to definition").
-The macros macroexpand to the standard API, thus have no runtime cost.
-Also added value: the handler existence is checked at compile time, and typos are avoided.
+When dispatching and subscribing, we have a number of macros called the
+"Ergonomic API". These are equivalent to the ones in Re-Frame (or Tape - ending
+in *), except they take a handler's symbol instead of a keyword in the first
+position of the vector. This symbol is IDE navigable ("jump to definition"). The
+macros macroexpand to the standard API, thus have no runtime cost. Also added
+value: the handler existence is checked at compile time, and typos are avoided.
 
 [source,clojure]
 ----
-(tools/dispatch [posts.c/index])
+(mvc/dispatch [posts.c/index])
 ;; => (rf/dispatch [::posts.c/index])
 
-(tools/subscribe [posts.c/posts])
+(mvc/subscribe [posts.c/posts])
 ;; => (rf/subscribe [::posts.c/posts])
 
 (router/href [greet.c/hi {:say "Hi!"}])
@@ -461,13 +478,9 @@ Also added value: the handler existence is checked at compile time, and typos ar
 (router/navigate [greet.c/hi {:say "Hi!"}])
 ;; => (router/navigate* [::greet.c/hi {:say "Hi!"}])
 
-(tools/lens posts.c/post posts.c/field)
-;; => (tools/lens* ::posts.c/post ::posts.c/field)
+(mvc/lens posts.c/post posts.c/field)
+;; => (mvc/lens* ::posts.c/post ::posts.c/field)
 ----
-
-=== See also
-
-See the READMEs of each subproject.
 
 === License
 

@@ -2170,7 +2170,7 @@ status open
 
 \begin_layout Plain Layout
 
-(tools/dispatch
+(mvc/dispatch
 \end_layout
 
 \begin_layout Plain Layout
@@ -2198,7 +2198,7 @@ status open
 
 \begin_layout Plain Layout
 
-  [::people.c/index])
+ [::people.c/index])
 \end_layout
 
 \end_inset
@@ -2250,7 +2250,7 @@ status open
 
 \begin_layout Plain Layout
 
-(tools/subscribe
+(mvc/subscribe
 \end_layout
 
 \begin_layout Plain Layout
@@ -2278,7 +2278,7 @@ status open
 
 \begin_layout Plain Layout
 
-  [::people.c/person])
+ [::people.c/person])
 \end_layout
 
 \end_inset
